@@ -1,29 +1,33 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
-// import { UsersModule } from './users/users.module';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { Role } from './auth/entities/role.entity';
 import { Permission } from './auth/entities/permission.entity';
 import { UsersModule } from './users/users.module';
-
+import {ConfigModule , ConfigService} from '@nestjs/config';  
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres', // <-- DÒNG QUAN TRỌNG NHẤT GÂY RA LỖI
-      host: 'localhost',
-      port: 5432,
-      username: 'admin', // Thay bằng username của bạn
-      password: 'admin', // Thay bằng password của bạn
-      database: 'admin', // Thay bằng database của bạn
-      //
-      entities: [User, Role, Permission],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
+        entities: [User, Role, Permission],
+        synchronize: true,
+      }),
+      inject: [ConfigService],
     }),
     UsersModule,
   ],
-  // controllers: [AppController],
-  // providers: [AppService],
+
 })
 export class AppModule {}
