@@ -18,8 +18,11 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column({ select: false })
+  password: string | undefined;
+
   @Column()
-  password: string;
+  permission_group: string[];
 
   @Column({ unique: true, nullable: true })
   paypal: string;
