@@ -7,6 +7,7 @@ import { Role } from './auth/entities/role.entity';
 import { Permission } from './auth/entities/permission.entity';
 import { UsersModule } from './users/users.module';
 import {ConfigModule , ConfigService} from '@nestjs/config';  
+// import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,6 +28,7 @@ import {ConfigModule , ConfigService} from '@nestjs/config';
       inject: [ConfigService],
     }),
     UsersModule,
+    // AuthModule,
   ],
 
 })

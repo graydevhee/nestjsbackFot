@@ -2,11 +2,17 @@ import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
-  private idCounter = 1;
+  constructor(
+    @InjectRepository(User) // Tiêm Repository vào
+    private usersRepository: Repository<User>,
+    private idCounter = 1,
+    private users: User[] = [],
+  ) {}
   create(createUserDto: CreateUserDto) {
     const newUser: User = {
       id: this.idCounter++,
@@ -15,13 +21,12 @@ export class UsersService {
     this.users.push(newUser);
     return newUser;
   }
-  findAll() {
-    return this.users;
+  findAll(): Promise<User[]> {
+    // Dùng trực tiếp repository đã được tiêm
+    return this.usersRepository.find();
   }
-
-  findOne(id: number) {
-    console.log(`findOne called with id: ${id}`);
-    return this.users.find((user: User) => user.id === id);
+  findOne(username: string) {
+    return this.usersRepository.findOne({ where: { username } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
