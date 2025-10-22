@@ -49,4 +49,12 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+  // eslint-disable-next-line prettier/prettier
+  async findOneByUsernameWithPassword(username: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .addSelect('user.password') // Yêu cầu TypeORM lấy thêm cột password
+      .getOne();
+  }
 }

@@ -1,19 +1,19 @@
+/* eslint-disable prettier/prettier */
 // auth/auth.module.ts
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule } from 'src/user/user.module'; // 1. Import UserModule
+import { UsersModule } from 'src/users/users.module'; // 1. Import UsersModule
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    // 1. Import UserModule để AuthSevice có thể dùng UserService
-    UserModule, 
-    
+    // 1. Import UsersModule để AuthSevice có thể dùng UserService
+    UsersModule,
     // 2. Cấu hình Passport
-    PassportModule.register({ defaultStrategy: 'jwt' }), 
+    PassportModule.register({ defaultStrategy: 'jwt' }),
 
     // 3. Cấu hình JwtModule động (để đọc secret từ .env)
     JwtModule.registerAsync({
@@ -22,7 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'), // Đọc secret từ .env
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '3600s'), // Ví dụ: 1 giờ
+          expiresIn: parseInt(configService.get<string>('JWT_EXPIRES_IN', '3600'), 10), // Ví dụ: 1 giờ
         },
       }),
     }),
