@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Import thêm ConfigService
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 // Import các module khác của bạn (AuthModule, v.v.)
 
 @Module({
@@ -40,7 +41,7 @@ import { UsersModule } from './users/users.module';
 
     // 3. Import các feature modules (UserModule giờ sẽ hoạt động)
     UsersModule,
-    // AuthModule, ...
+    AuthModule,
   ],
   // controllers: [AppController],
   // providers: [AppService],

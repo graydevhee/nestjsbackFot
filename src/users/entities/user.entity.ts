@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Role } from 'src/auth/entities/role.entity';
 import {
   Entity,
@@ -19,22 +20,23 @@ export class User {
   email: string;
 
   @Column({ select: false })
-  password: string | undefined;
+  password: string;
 
-  @Column()
+  @Column({ type: 'simple-array', nullable: true }) // Sử dụng 'simple-array' cho mảng string đơn giản
   permission_group: string[];
 
   @Column({ unique: true, nullable: true })
   paypal: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   code: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
   @Column({ unique: true, nullable: true })
   token: string;
+
   @ManyToMany(() => Role)
   @JoinTable({
     name: 'users_roles', // Tên bảng trung gian
@@ -42,4 +44,4 @@ export class User {
     inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
   })
   roles: Role[];
-}
+};

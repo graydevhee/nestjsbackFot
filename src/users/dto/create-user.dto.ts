@@ -1,5 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Role } from 'src/auth/entities/role.entity';
 
 export class CreateUserDto {
@@ -8,25 +15,31 @@ export class CreateUserDto {
   username: string;
 
   @IsEmail()
-  email: string;
+  @IsOptional()
+  email?: string;
 
   @IsString()
-  @IsNotEmpty()
-  password: string;
+  // @IsNotEmpty()
+  @IsOptional()
+  password?: string;
 
   @IsArray()
   @IsNumber({}, { each: true }) // Đảm bảo mỗi phần tử trong mảng là một số
   roles: Role[]; // Chỉ cần nhận vào một mảng các ID của Role, ví dụ: [1, 3]
 
   @IsString()
-  paypal: string;
+  @IsOptional()
+  paypal?: string;
 
   @IsString()
-  code: string;
+  @IsOptional()
+  code?: string;
 
   @IsString()
-  address: string;
+  @IsOptional()
+  address?: string;
 
   @IsString()
-  token: string;
+  @IsOptional()
+  token?: string;
 }

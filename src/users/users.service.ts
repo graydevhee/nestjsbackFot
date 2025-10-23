@@ -1,5 +1,5 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -10,6 +10,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { NotFoundException } from '@nestjs/common'; // Import thêm
 @Injectable()
 export class UsersService {
   [x: string]: any;
@@ -27,7 +28,7 @@ export class UsersService {
       password: hashedPassword,
     });
     await this.usersRepository.save(user);
-    user.password = undefined; // Xóa password khỏi object trả về
+    user.password = " "; // Xóa password khỏi object trả về
     return user;
   }
   findAll(): Promise<User[]> {
@@ -37,7 +38,14 @@ export class UsersService {
   findOne(username: string) {
     return this.usersRepository.findOne({ where: { username } });
   }
-
+  async findOneById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    // Không cần xóa password ở đây vì JwtStrategy sẽ làm
+    return user;
+  }
   update(username: string, updateUserDto: UpdateUserDto) {
     const user = this.users.find((user: User) => user.username === username);
     if (user) {
